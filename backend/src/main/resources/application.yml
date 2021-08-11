@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      format_sql: true
+  server:
+    port: 8080
+  jwt:
+    secret : eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYyNzEwMzg3OCwiaWF0IjoxNjI3MTAzODc4fQ.tkD2jXV5pZAORO23bzLVDo1f7UlrF_O-0YzJNRjmblw
+  redis:
+    port: 6379
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: file:/app/config/backend/application.yml

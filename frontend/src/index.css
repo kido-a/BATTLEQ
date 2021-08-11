@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+}
+#root,
+html,
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  font-family: "nanumsquare";
+  background-color: #f5f6f7;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.nav {
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 10vh;
+  align-items: center;
+  position: fixed;
+  top: 10px;
+  right: 20px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: black;
+  text-transform: uppercase;
+  font-size: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.nav a:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.nav_btn {
+  background-color: transparent;
+  border: none;
+  background-color: white;
+  height: 30px;
+  width: 80px;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.header_width {
+  width: 33%;
+}
+
+.Home_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.Home_title span {
+  font-size: 600;
+  font-size: 2em;
+}
+
+.Home_btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.Home_menu {
+  margin-left: 10px;
+}
+
+.Login_wrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.Login_form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70em;
+  height: 50em;
+
+  flex-direction: column;
+}
+
+.Login_form input {
+  width: 15em;
+  margin-bottom: 15px;
+  font-size: 15px;
+  margin: 10px 0px;
+}
+
+.login-form-button {
+  width: 25em;
+  height: 3em;
+  font-size: 25px;
+}
+
+.Login_form input ::placeholder {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.Login_btn_home img {
+  height: 60px;
+  width: 100%;
+}
+
+.Login_btn_home {
+  border: none;
+  width: 25em;
+
+  margin-bottom: 70px;
+}
+
+.Login_check {
+  margin-bottom: 50px;
+}
+
+button {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+}
+
+.login_sub {
+  width: 30em;
+  height: 2.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.login_sub_menu {
+  height: 1.7em;
+  width: 8em;
+
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.login_sub_column {
+  width: 0.2em;
+  height: 1.5em;
+  background-color: black;
+  opacity: 0.3;
+}
