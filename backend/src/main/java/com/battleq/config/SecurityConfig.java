@@ -54,6 +54,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/member/regist").anonymous()
                 .antMatchers("/member/validate/**").anonymous()
                 .antMatchers("/member/detail/*").hasAnyRole("STUDENT","TEACHER","ADMIN")
+                .antMatchers("/v2/api-docs").anonymous()
+                .antMatchers("/swagger-resources/**").anonymous()
+                .antMatchers("/webjars/**").anonymous()
+                .antMatchers("/swagger/**").anonymous()
+                .antMatchers("/swagger-ui/**").anonymous()
+                .antMatchers("/api/**").anonymous()
+
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()

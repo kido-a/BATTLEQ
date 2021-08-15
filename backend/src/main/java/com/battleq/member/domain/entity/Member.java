@@ -1,6 +1,8 @@
 package com.battleq.member.domain.entity;
 
 import com.battleq.member.domain.dto.MemberDto;
+import com.battleq.quiz.domain.entity.Quiz;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -47,7 +51,10 @@ public class Member {
     @Column
     private Authority authority;
 
-
+    @JsonIgnore
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
     public void updateEmailAuth(EmailAuth auth) {
         this.emailAuth = auth;
