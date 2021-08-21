@@ -7,6 +7,8 @@ import com.battleq.quiz.domain.entity.Quiz;
 import com.battleq.quizItem.domain.QuizType;
 import com.battleq.quizItem.domain.entity.QuizItem;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +16,11 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
+@Profile("local")
 @Component
 @RequiredArgsConstructor
 public class InitDb {
+
 
     private final InitService initService;
     @PostConstruct
@@ -30,12 +34,13 @@ public class InitDb {
     static class InitService{
 
         private final EntityManager em;
+        private final PasswordEncoder passwordEncoder;
         public void dbInit(){
             for(int i=0;i<5;i++){
                 Member member = Member.builder()
                         .userName("test_userName"+(i+1))
                         .email("test"+(i+1)+"@naver.com")
-                        .pwd("test123")
+                        .pwd(passwordEncoder.encode("test123"))
                         .regDate(LocalDateTime.now())
                         .modDate(LocalDateTime.now())
                         .emailAuth(EmailAuth.Y)

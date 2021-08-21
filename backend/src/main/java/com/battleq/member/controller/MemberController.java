@@ -1,6 +1,11 @@
 package com.battleq.member.controller;
 
-import com.battleq.member.domain.dto.MemberDto;
+import com.battleq.member.domain.dto.request.LoginDto;
+import com.battleq.member.domain.dto.request.MemberDto;
+import com.battleq.member.domain.dto.request.RegistDto;
+import com.battleq.member.domain.dto.request.TokenDto;
+import com.battleq.member.domain.dto.response.MemberResponse;
+import com.battleq.member.domain.entity.Member;
 import com.battleq.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,9 +25,17 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/member/regist")
-    public ResponseEntity<String> registMember(@RequestBody MemberDto dto) throws Exception {
+    public ResponseEntity<MemberResponse> registMember(@RequestBody RegistDto dto) throws Exception {
         String registEmail = memberService.registMember(dto);
-        return new ResponseEntity<String>(registEmail, HttpStatus.CREATED);
+        MemberResponse memberResponse;
+        if (!registEmail.equals("") && registEmail != null) {
+            memberResponse = new MemberResponse("정상 가입되었습니다.", registEmail);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.CREATED);
+        } else {
+            memberResponse = new MemberResponse("회원가입이 실패하였습니다. 관리자에게 문의하시기 바랍니다.",null);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     /**
@@ -55,25 +68,30 @@ public class MemberController {
      * 회원정보 수정
      */
     @PutMapping("/member/modify")
-    public ResponseEntity<String> modifyMemberInfo(@RequestBody MemberDto dto) throws Exception {
+    public ResponseEntity<MemberResponse> modifyMemberInfo(@RequestBody MemberDto dto) throws Exception {
         String email = memberService.modifyMemberInfo(dto);
+        MemberResponse memberResponse;
         if (email != null) {
-            return new ResponseEntity<String>(email, HttpStatus.OK);
+            memberResponse = new MemberResponse("수정이 완료되었습니다.",email);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            memberResponse = new MemberResponse("수정이 실패하였습니다. 관리자에게 문의하여 주시기 바랍니다.", null);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.BAD_REQUEST);
         }
+
     }
 
     /**
      * 로그인
      */
     @PostMapping("/member/login")
-    public ResponseEntity<String> doLogin(@RequestBody MemberDto dto) throws Exception {
-        String token = memberService.validateLogin(dto);
-        if (token != null) {
-            return new ResponseEntity<String>(token, HttpStatus.OK);
+    public ResponseEntity<MemberResponse> doLogin(@RequestBody LoginDto dto) throws Exception {
+        TokenDto tokenDto = memberService.validateLogin(dto);
+        MemberResponse memberResponse = tokenDto.toResponse();
+        if (memberResponse.getData() != null) {
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -81,12 +99,15 @@ public class MemberController {
      * 유저 상세보기
      */
     @GetMapping("/member/detail/{email}")
-    public ResponseEntity<MemberDto> getMemberDetail(@PathVariable("email") String email) throws Exception {
+    public ResponseEntity<MemberResponse> getMemberDetail(@PathVariable("email") String email) throws Exception {
         MemberDto memberDetail = memberService.getMemberDetail(email);
+        MemberResponse memberResponse;
         if (memberDetail != null) {
-            return new ResponseEntity<MemberDto>(memberDetail, HttpStatus.OK);
+            memberResponse = new MemberResponse(null,memberDetail);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            memberResponse = new MemberResponse("해당 유저가 존재하지 않습니다.", null);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -94,12 +115,15 @@ public class MemberController {
      * 로그아웃
      */
     @PostMapping("/member/logout")
-    public ResponseEntity<Boolean> doLogout(@RequestHeader("accessToken") String token) throws Exception {
+    public ResponseEntity<MemberResponse> doLogout(@RequestHeader("accessToken") String token) throws Exception {
         Boolean isLogout = memberService.doLogout(token);
+        MemberResponse memberResponse;
         if (isLogout) {
-            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+            memberResponse = new MemberResponse( "로그아웃 되었습니다.",null);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.OK);
         } else {
-            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+            memberResponse = new MemberResponse("이미 로그아웃 하셨습니다.",null);
+            return new ResponseEntity<MemberResponse>(memberResponse,HttpStatus.BAD_REQUEST);
         }
     }
 

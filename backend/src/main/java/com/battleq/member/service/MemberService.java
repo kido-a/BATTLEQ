@@ -1,9 +1,10 @@
 package com.battleq.member.service;
 
 import com.battleq.config.jwt.JwtTokenProvider;
-import com.battleq.member.domain.dto.MemberDto;
-import com.battleq.member.domain.entity.Authority;
-import com.battleq.member.domain.entity.EmailAuth;
+import com.battleq.member.domain.dto.request.LoginDto;
+import com.battleq.member.domain.dto.request.MemberDto;
+import com.battleq.member.domain.dto.request.RegistDto;
+import com.battleq.member.domain.dto.request.TokenDto;
 import com.battleq.member.domain.entity.Member;
 import com.battleq.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,7 @@ public class MemberService {
     /**
      * 회원가입
      */
-    public String registMember(MemberDto dto) throws Exception {
-        dto.updateEmailAuth(EmailAuth.N);
-        dto.updateAuthority(Authority.ROLE_STUDENT);
+    public String registMember(RegistDto dto) throws Exception {
         String encodePassword = passwordEncoder.encode(dto.getPwd());
         dto.updateEncodePassword(encodePassword);
         Member member = dto.toEntity();
@@ -82,17 +81,17 @@ public class MemberService {
     /**
      * 로그인
      */
-    public String validateLogin(MemberDto dto) throws Exception {
+    public TokenDto validateLogin(LoginDto dto) throws Exception {
         Optional<Member> result = memberRepository.findMemberByEmail(dto.getEmail());
         if (result.isPresent()) {
             Member member = result.get();
             if (!passwordEncoder.matches(dto.getPwd(), member.getPwd())) {
-                return null;
+                return new TokenDto(null, "비밀번호가 다릅니다.");
             }
             String accessToken = jwtTokenProvider.createToken(member.getEmail(), Arrays.asList(member.getConvertAuthority()));
-            return accessToken;
+            return new TokenDto(accessToken, "로그인 성공");
         } else {
-            return null;
+            return new TokenDto(null, "해당 회원은 존재하지 않습니다.");
         }
     }
 
@@ -119,11 +118,15 @@ public class MemberService {
      * 로그아웃
      */
     public boolean doLogout(String token) throws Exception {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        Date accessTokenExpireDate = jwtTokenProvider.getExpireDate(token);
-        valueOperations.set(token, token, accessTokenExpireDate.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
-        SecurityContextHolder.clearContext();
-        return true;
+        try {
+            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            Date accessTokenExpireDate = jwtTokenProvider.getExpireDate(token);
+            valueOperations.set(token, token, accessTokenExpireDate.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+            SecurityContextHolder.clearContext();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
