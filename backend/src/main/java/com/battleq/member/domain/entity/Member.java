@@ -1,6 +1,6 @@
 package com.battleq.member.domain.entity;
 
-import com.battleq.member.domain.dto.MemberDto;
+import com.battleq.member.domain.dto.request.MemberDto;
 import com.battleq.quiz.domain.entity.Quiz;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

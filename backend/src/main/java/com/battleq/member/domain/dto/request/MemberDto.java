@@ -1,4 +1,4 @@
-package com.battleq.member.domain.dto;
+package com.battleq.member.domain.dto.request;
 
 import com.battleq.member.domain.entity.Authority;
 import com.battleq.member.domain.entity.EmailAuth;

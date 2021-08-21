@@ -37,7 +37,7 @@ public class SwaggerConfiguration {
                 .securitySchemes(Arrays.asList(apiKey()));
     }
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "X_AUTH_TOKEN", "header");
+        return new ApiKey("JWT", "accessToken", "header");
     }
     private SecurityContext securityContext() {
         return SecurityContext

@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
-@Profile("prod")
+@Profile("local")
 @Configuration
 public class LocalRedisConfig {
     @Value("${spring.redis.port}")
