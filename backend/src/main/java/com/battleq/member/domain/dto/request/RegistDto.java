@@ -22,9 +22,6 @@ public class RegistDto {
     public void updateEncodePassword(String password) {
         this.pwd = password;
     }
-    public void updateAuthority(Authority auth) {
-        this.authority = auth;
-    }
 
     public Member toEntity() {
         return Member.builder()

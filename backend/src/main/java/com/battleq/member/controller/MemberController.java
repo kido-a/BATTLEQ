@@ -127,4 +127,18 @@ public class MemberController {
         }
     }
 
+    /**
+     * 회원삭제
+     */
+    @DeleteMapping("/member/{email}")
+    public ResponseEntity deleteMember(@PathVariable("email")String email) throws Exception {
+        MemberResponse deletedMember = memberService.deleteMember(email);
+        boolean isDeleted = (boolean)deletedMember.getData();
+        if (isDeleted) {
+            return new ResponseEntity<>(deletedMember.getMessage(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(deletedMember.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
