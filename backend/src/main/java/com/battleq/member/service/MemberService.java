@@ -5,6 +5,7 @@ import com.battleq.member.domain.dto.request.LoginDto;
 import com.battleq.member.domain.dto.request.MemberDto;
 import com.battleq.member.domain.dto.request.RegistDto;
 import com.battleq.member.domain.dto.request.TokenDto;
+import com.battleq.member.domain.dto.response.MemberResponse;
 import com.battleq.member.domain.entity.Member;
 import com.battleq.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -88,7 +90,7 @@ public class MemberService {
             if (!passwordEncoder.matches(dto.getPwd(), member.getPwd())) {
                 return new TokenDto(null, "비밀번호가 다릅니다.");
             }
-            String accessToken = jwtTokenProvider.createToken(member.getEmail(), Arrays.asList(member.getConvertAuthority()));
+            String accessToken = jwtTokenProvider.createToken(member.getEmail(),member.getNickname(),Arrays.asList(member.getConvertAuthority()));
             return new TokenDto(accessToken, "로그인 성공");
         } else {
             return new TokenDto(null, "해당 회원은 존재하지 않습니다.");
@@ -128,5 +130,28 @@ public class MemberService {
             return false;
         }
     }
+    /**
+     * 회원삭제
+     */
+    public MemberResponse deleteMember(String email) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        if (!currentEmail.equals(email)) {
+            return new MemberResponse("현재 본인 계정이 아닙니다.",false);
+        }
+        Optional<Member> member = memberRepository.findMemberByEmail(email);
+        if (member.isPresent()) {
+            try {
+                memberRepository.delete(member.get());
+                return new MemberResponse("삭제 되었습니다.",true);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new MemberResponse("삭제 도중 오류가 발생하였습니다.",false);
+            }
+        } else {
+            return new MemberResponse("해당 회원이 존재하지 않습니다.",false);
+        }
+    }
+
 
 }
