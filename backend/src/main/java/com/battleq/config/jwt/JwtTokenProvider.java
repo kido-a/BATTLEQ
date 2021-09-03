@@ -32,9 +32,10 @@ public class JwtTokenProvider {
     /**
      * TOKEN 생성
      */
-    public String createToken(String userPk, Collection<? extends GrantedAuthority> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk);
+    public String createToken(String email, String nickname, Collection<? extends GrantedAuthority> roles) {
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles",roles);
+        claims.put("nickname",nickname);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) //Claims
