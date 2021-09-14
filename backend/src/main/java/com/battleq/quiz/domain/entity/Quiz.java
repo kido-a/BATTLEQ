@@ -40,6 +40,7 @@ public class Quiz {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<QuizItem> quizItems = new ArrayList<>();
 
