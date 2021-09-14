@@ -8,9 +8,10 @@ import com.battleq.quizItem.domain.dto.request.CreateQuizItemRequest;
 import com.battleq.quizItem.domain.dto.request.UpdateQuizItemRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface QuizItemMapper {
     QuizItemMapper INSTANCE = Mappers.getMapper(QuizItemMapper.class);
 
