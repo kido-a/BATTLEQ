@@ -2,6 +2,7 @@ package com.battleq.quiz.repository;
 
 
 import com.battleq.quiz.domain.entity.Quiz;
+import com.battleq.quiz.domain.exception.NotFoundQuizException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,7 @@ public class QuizRepository {
         }
     }
 
-    public Quiz findOne(Long id){
+    public Quiz findOne(Long id) {
         return em.find(Quiz.class, id);
     }
 

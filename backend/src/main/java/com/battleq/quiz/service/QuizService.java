@@ -44,7 +44,6 @@ public class QuizService {
 
         Quiz quiz = quizRepository.findOne(id);
 
-        foundQuiz(id,quiz); // 퀴즈 유무 검증
         authorizedQuiz(quizRequest.getMemberId(),quiz); // 권한 검증
 
         quiz.updateQuiz(quizRequest.getName(), quizRequest.getCategory(), quizRequest.getThumbnail(), quizRequest.getIntroduction());
@@ -52,9 +51,12 @@ public class QuizService {
         return quiz.getId();
     }
 
-    public Quiz findOne(Long quizId) {
-
-        return quizRepository.findOne(quizId);
+    public Quiz findOne(Long quizId) throws NotFoundQuizException {
+        Quiz quiz = quizRepository.findOne(quizId);
+        if(quiz == null){
+            throw new NotFoundQuizException("선택한 퀴즈를 찾을 수 없습니다.");
+        }
+        return quiz;
 
     }
 
@@ -67,7 +69,7 @@ public class QuizService {
         return member.orElseThrow(() -> new NotFoundMemberException("검색한 사용자의 데이터를 찾을 수 없습니다."));
     }
 
-    public void foundQuiz(Long id ,Quiz quiz) throws NotFoundQuizException{
+    public void findQuiz(Long id ,Quiz quiz) throws NotFoundQuizException{
         if(quiz == null){
             throw new NotFoundQuizException("검색한 퀴즈의 데이터를 찾을 수 없습니다.");
         }
