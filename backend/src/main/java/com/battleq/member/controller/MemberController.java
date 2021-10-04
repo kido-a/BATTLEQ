@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -25,7 +26,7 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/member/regist")
-    public ResponseEntity<MemberResponse> registMember(@RequestBody RegistDto dto) throws Exception {
+    public ResponseEntity<MemberResponse> registMember(@RequestBody RegistDto dto, @RequestParam("profile") MultipartFile file) throws Exception {
         String registEmail = memberService.registMember(dto);
         MemberResponse memberResponse;
         if (!registEmail.equals("") && registEmail != null) {

@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 
-@Profile("local")
 @Component
 @RequiredArgsConstructor
 public class InitDb {
@@ -50,7 +49,7 @@ public class InitDb {
                 Quiz quiz  = Quiz.builder()
                         .name("NO."+(i+1)+" 테스트용 Quiz ")
                         .introduction("테스트용 퀴즈입니다.")
-                        .category("IT/인터넷")
+                        .category("IT")
                         .thumbnail("https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg")
                         .view(0)
                         .member(member)
