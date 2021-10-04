@@ -59,12 +59,65 @@ public class QuizRepository {
     public List<Quiz> findAllWithMemberItem(int offset, int limit){
         return em.createQuery(
                 "select distinct q from Quiz q"+
-                        " join fetch q.member m" ,Quiz.class).setFirstResult(offset).setMaxResults(limit).getResultList();
+                        " join fetch q.member m",Quiz.class).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     public List<Quiz> findAllWithMemberItem(){
         return em.createQuery(
                 "select distinct q from Quiz q"+
                         " join fetch q.member m" ,Quiz.class).getResultList();
+    }
+
+
+
+    public List<Quiz> countAllQuizWithMemberNickname(String nickName){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where m.nickname = :nickName"
+                ,Quiz.class).setParameter("nickName",nickName).getResultList();
+    }
+
+    public List<Quiz> countAllQuizWithName(String name){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where q.name like concat('%',:name,'%')"
+                ,Quiz.class).setParameter("name",name).getResultList();
+    }
+
+    public List<Quiz> countAllQuizWithCategory(String category){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where q.category = :category"
+                ,Quiz.class).setParameter("category",category).getResultList();
+    }
+
+    public List<Quiz> findAllQuizWithMemberNickname(String nickName, int offset , int limit){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where m.nickname = :nickName"+
+                        " order by q.creationDate desc"
+                , Quiz.class).setParameter("nickName",nickName).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    public List<Quiz> findAllQuizWithName(String name, int offset, int limit){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where q.name like concat('%',:name,'%')"+
+                        " order by q.creationDate desc"
+                ,Quiz.class).setParameter("name",name).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    public List<Quiz> findAllQuizWithCategory(String category, int offset, int limit){
+        return em.createQuery(
+                "select q from Quiz q"+
+                        " join fetch q.member m"+
+                        " where q.category = :category"+
+                        " order by q.creationDate desc"
+                ,Quiz.class).setParameter("category",category).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 }
