@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -44,7 +45,7 @@ public class Member {
     @Column(length = 100, nullable = false)
     private String nickname;
     @Column
-    private Long profileImg;
+    private String profileImg;
     @Column
     private String userInfo;
     @Enumerated(EnumType.STRING)
@@ -52,9 +53,8 @@ public class Member {
     private Authority authority;
 
     @JsonIgnore
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    @OneToMany(mappedBy = "member")
+    private List<Quiz> quiz;
 
     public void updateEmailAuth(EmailAuth auth) {
         this.emailAuth = auth;
