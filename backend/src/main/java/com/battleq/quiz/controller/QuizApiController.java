@@ -71,7 +71,7 @@ public class QuizApiController {
 
     @ExceptionHandler({NotFoundQuizException.class})
     public ExceptionResponse NotFoundQuiz(final Exception ex) {
-        return new ExceptionResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND, "NOT_FOUND", "콘텐츠를 찾을 수 없습니다.", "/api/v1/quiz");
+        return new ExceptionResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND, "NOT_FOUND", "퀴즈를 찾을 수 없습니다.", "/api/v1/quiz");
     }
     @ExceptionHandler({NotAuthorized.class})
     public ExceptionResponse NotAuthorizedQuiz(final Exception ex) {
