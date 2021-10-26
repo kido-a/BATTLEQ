@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .Quiz_make_wrapper {
   display: flex;
   flex-direction: column;

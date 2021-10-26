@@ -1,101 +1,66 @@
 import React, { Component, useEffect, useState } from "react";
-import { MenuItem, TextField, Button } from "@material-ui/core";
-import Categories from "../Quiz/Data";
-import ErrorMessage from "../../Error/ErrorMessage";
+import {
+  Container,
+  Grid,
+  Box,
+  Avatar,
+  Typography,
+  Divider,
+} from "@material-ui/core";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
-import "../../styles/Home.css";
+import MainLayout from "../../layout/MainLayout";
+import { Circle as CircleIcon, X as XIcon } from "react-feather";
 
-import { useHistory } from "react-router";
-
-const Home = (props) => {
-  const [category, setCategory] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-  const [error, setError] = useState(false);
-  const history = useHistory();
-
-  const handleSubmit = () => {
-    if (!category || !difficulty || !props.name) {
-      setError(true);
-      return;
-    } else {
-      setError(false);
-      props.fetchQuestions(category, difficulty);
-      history.push("/quiz");
-    }
-  };
-  if (props.user) {
-    // return <h2>Hi {props.user.email}</h2>;
-    // return <h2>Welcome Battle-Q</h2>;
+const Home = ({ user }) => {
+  if (user) {
     return (
-      <div className="content">
-        <div className="settings">
-          <span style={{ fontSize: 30 }}>Quiz settings</span>
-          <div className="settings__select">
-            {error && <ErrorMessage>Please Fill all the fields</ErrorMessage>}
-
-            <TextField
-              style={{ marginBottom: 25 }}
-              label="Enter your name"
-              variant="outlined"
-              onChange={(e) => props.setName(e.target.value)}
-            />
-
-            <TextField
-              select
-              label="Select Category"
-              variant="outlined"
-              style={{ marginBottom: 30 }}
-              onChange={(e) => setCategory(e.target.value)}
-              value={category}
-            >
-              {Categories.map((cat) => (
-                <MenuItem key={cat.category} value={cat.value}>
-                  {cat.category}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
-              select
-              label="Select Difficulty"
-              variant="outlined"
-              style={{ marginBottom: 30 }}
-              onChange={(e) => setDifficulty(e.target.value)}
-              value={difficulty}
-            >
-              <MenuItem key="Easy" value="easy">
-                {" "}
-                Easy
-              </MenuItem>
-              <MenuItem key="Medium" value="medium">
-                {" "}
-                Medium
-              </MenuItem>
-              <MenuItem key="Hard" value="hard">
-                {" "}
-                Hard
-              </MenuItem>
-            </TextField>
-
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={handleSubmit}
-            >
-              Start Quiz
-            </Button>
-          </div>
-        </div>
-        <img src="./quiz.svg" className="banner" alt="quiz img" />
-      </div>
+      <MainLayout>
+        <Helmet>
+          <title>Battle-Q | Material Kit</title>
+        </Helmet>
+        <Box
+          sx={{
+            backgroundColor: "background.default",
+            width: "100%",
+            minHeight: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            py: 2,
+          }}
+        >
+          <Grid xs={2} className="gridclass">
+            <CircleIcon size={200} color="blue" className="circleAnimation" />
+          </Grid>
+          <Grid>
+            <XIcon size={250} color="red" className="xAnimation" />
+          </Grid>
+        </Box>
+      </MainLayout>
     );
-  }
-  return (
-    <div>
-      <h2>you are not logged in</h2>
-    </div>
-  );
+  } else
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          // flexDirection: "column",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <img
+          alt="Example Alt"
+          src="/homePic.jpg"
+          height="100%"
+          width="100%"
+          backgroundColor="blue"
+        />
+      </Box>
+    );
 };
 
 export default Home;

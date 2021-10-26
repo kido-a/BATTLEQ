@@ -1,15 +1,31 @@
+// import { ThemeProvider } from "@emotion/react";
 import axios from "axios";
 import React, { useState, useEffect, useContext } from "react";
-import { Redirect } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Redirect, Link, Navigate } from "react-router-dom";
 import { UserStateContext } from "../../Context/Context";
 
-export default function Login(props) {
+import { Container } from "react-bootstrap";
+import {
+  TextField,
+  Avatar,
+  Checkbox,
+  CssBaseline,
+  Grid,
+  Typography,
+  createTheme,
+  FormControlLabel,
+  Button,
+  Box,
+  ThemeProvider,
+} from "@material-ui/core";
+import swal from "sweetalert";
+
+export default function Login({ setUsers, setLoggedIn }) {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [successCheck, setSuccessCheck] = useState(false);
   const [message, setMessage] = useState("");
-  const { setUser } = useContext(UserStateContext);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -19,25 +35,31 @@ export default function Login(props) {
     };
 
     axios
-      .post("/member/login", data)
+      // .post("http://3.37.99.78:8080/member/login", data)
+      .post("http://localhost:8080/member/login", data)
       .then((res) => {
         localStorage.setItem("accessToken", res.data.data);
         localStorage.setItem("email", data.email);
-        console.log("res : ", res);
-        console.log("data : ", data);
-        setLoggedIn(true);
-        console.log("props : ", props);
+        setSuccessCheck(true);
 
-        props.setUsers(data);
+        // data는 이메일과 패스워드 App.js의 setUsers로 이메일과 패스워드 값을 넘기는 부분.
+        // 그래서 로그인 직후 이메일은 바로 갱신이 되지만 다른 정보는 새로고침 해야 뜸.
+        // 데이터 보내는 것 수정해야함 (상태관리를 어떻게 해야하는지 추후 수정 (usecontext, redux, mobx 등))
+
+        setUsers(data);
       })
 
       .catch((err) => {
-        console.log(err.response);
         setMessage(err.response.data.message);
       });
   };
-  if (loggedIn) {
+
+  if (successCheck) {
+    swal("Success", {
+      timer: 5000,
+    });
     return <Redirect to={"/"} />;
+    // return <Navigate to={"/"} />;
   }
 
   let error = "";
@@ -50,37 +72,64 @@ export default function Login(props) {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
+      <Typography component="h1" variant="h5">
+        로그인
         {error}
-        <h3>Login</h3>
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="이메일"
+          name="email"
+          value={email}
+          autoComplete="off"
+          autoFocus
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="pwd"
+          label="비밀번호"
+          type="password"
+          id="pwd"
+          value={pwd}
+          autoComplete="current-password"
+          onChange={(e) => setPwd(e.target.value)}
+        />
 
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            placeholder="Password"
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-          ></input>
-        </div>
-
-        <button className="btn btn-primary btn-block">Login</button>
-        <p className="forgot-password text-right">
-          <Link to={"/Forgot"}>Forgot password?</Link>
-        </p>
-      </form>
-    </div>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={handleSubmit}
+        >
+          로그인
+        </Button>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Link to="/register" variant="body2">
+              {"계정이 없으신가요? 회원가입"}
+            </Link>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }

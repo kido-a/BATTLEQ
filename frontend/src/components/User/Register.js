@@ -2,9 +2,23 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
 import { UserStateContext } from "../../Context/Context";
+import { Link, Navigate } from "react-router-dom";
+import { PhotoCamera } from "@material-ui/icons";
 
-import { MenuItem, TextField, Button } from "@material-ui/core";
-import "../../styles/Home.css";
+import { Container } from "react-bootstrap";
+import {
+  TextField,
+  Avatar,
+  Checkbox,
+  CssBaseline,
+  Grid,
+  Typography,
+  createTheme,
+  FormControlLabel,
+  Button,
+  Box,
+  ThemeProvider,
+} from "@material-ui/core";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -16,17 +30,33 @@ export default function Register() {
   const [message, setMessage] = useState("");
   const [httpStatusCode, setHttpStatusCode] = React.useState();
 
-  const [profile_img, setProfile_img] = useState("profile_default_character1");
-  const { profile__img, setProfile__img } = useContext(UserStateContext);
+  const [profile, setProfile] = useState("profile_default_character1"); // 회원가입 시 들어가는 프로필 사진.
 
-  const save_img = "./" + profile_img + ".png";
+  const { profile__img, setProfile__img } = useContext(UserStateContext); // Profile.js에서도 값을 보내기 위한 useContext setProfile__img(profile)
+  const theme = createTheme();
+  // const save_img = "./" + profile + ".png";
+  // setProfile(save_img);
 
-  setProfile__img(save_img);
+  // const save_img = "./" + profile_img + ".png";
+  // setProfile__img(save_img);
 
   console.log("profile__img : ", profile__img);
+  console.log("profile : ", profile);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("profile", profile);
+    formData.append("email", email);
+    formData.append("nickname", nickname);
+    formData.append("authority", "ROLE_ADMIN");
+    formData.append("userInfo", "테스트 유저입니다.");
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
 
     const data = {
       email: email,
@@ -35,11 +65,11 @@ export default function Register() {
       userName: userName,
       authority: "ROLE_ADMIN",
       userInfo: "테스트 유저입니다.",
-      profile_img: save_img,
     };
 
     axios
-      .post("/member/regist", data)
+      .post("http://localhost:8080/member/regist", data)
+      // .post("http://3.37.99.78:8080/member/regist", formData, config)
       .then((res) => {
         console.log(res);
         setRegist(true);
@@ -50,19 +80,13 @@ export default function Register() {
       });
   };
 
-  const Overlap_email = (e) => {
-    const overemail = email;
-    e.preventDefault();
-    axios
-      .get(`http://localhost:8080/member/validate/email/${overemail}`)
-      .then((res) => {
-        console.log(res.status);
-        setEmailcheck("사용 가능한 이메일 입니다.");
-      })
-      .catch((err) => {
-        setEmailcheck("이미 사용중인 이메일 입니다.");
-      });
+  const handleFileChange = (e) => {
+    console.log("picture : ", e.target.files[0]);
+    const file = e.target.files[0];
+    setProfile(file); // 회원가입 시 들어갈 프로필 사진
+    setProfile__img(file); //useContext 변수 Profile과 update에서 사용하기 위함.
   };
+
   if (regist) {
     return <Redirect to={"/"} />;
   }
@@ -86,88 +110,116 @@ export default function Register() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Sign up</h3>
-      {error} {check}
-      <div className="form-group">
-        <div className="settings__select">
-          <TextField
-            select
-            label="Select profileImg"
-            variant="outlined"
-            style={{ marginBottom: 15 }}
-            onChange={(e) => setProfile_img(e.target.value)}
-            value={profile_img}
-          >
-            <MenuItem
-              key="profile_default_character1"
-              value="profile_default_character1"
-            >
-              {" "}
-              기본 이미지1
-            </MenuItem>
-            <MenuItem
-              key="profile_default_character2"
-              value="profile_default_character2"
-            >
-              {" "}
-              기본 이미지2
-            </MenuItem>
-            <MenuItem
-              key="profile_default_character3"
-              value="profile_default_character3"
-            >
-              {" "}
-              기본 이미지3
-            </MenuItem>
-          </TextField>
-        </div>
-        <div>
-          <img src={profile__img} alt="profile_img" />
-        </div>
-        <label>nickname</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-        ></input>
-      </div>
-      <div className="form-group">
-        <label>userName</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Username"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        ></input>
-      </div>
-      <div className="form-group">
-        <label>Email</label>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        ></input>
-        <button className="btn btn-primary btn-block" onClick={Overlap_email}>
-          중복확인
-        </button>
-      </div>
-      <div className="form-group">
-        <label>Password</label>
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Password"
-          value={pwd}
-          onChange={(e) => setPwd(e.target.value)}
-        ></input>
-      </div>
-      <button className="btn btn-primary btn-block">Sign up</button>
-    </form>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
+      <Typography component="h1" variant="h5">
+        회원 가입
+      </Typography>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              id="username"
+              label="사용자 이름"
+              name="username"
+              autoComplete="uname"
+              autoFocus
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              autoComplete="nname"
+              name="nickName"
+              required
+              fullWidth
+              id="nickName"
+              label="닉네임"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              // inputProps={{
+              //   autoComplete: "off",
+              // }}
+              required
+              fullWidth
+              id="email"
+              label="이메일"
+              name="email"
+              autoComplete="off"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} marginBottom={2}>
+            <TextField
+              required
+              fullWidth
+              name="pwd"
+              label="비밀번호"
+              type="password"
+              id="pwd"
+              autoComplete="new-password"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <input
+            accept="image/*"
+            style={{ display: "none" }}
+            id="raised-button-file"
+            multiple
+            type="file"
+            name="profile"
+            onChange={handleFileChange}
+          />
+          {/* { input과 결합. (input의 id값과 label의 id값을 같게)} */}
+          <label htmlFor="raised-button-file">
+            <Button variant="contained" color="success" component="span">
+              <PhotoCamera /> 프로필 추가
+            </Button>
+          </label>
+        </Grid>
+
+        <Grid item xs={12}>
+          {error}
+          {check}
+        </Grid>
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={handleSubmit}
+        >
+          회원 등록
+        </Button>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Link to="/login" variant="body2">
+              계정이 이미 있으십니까? 로그인
+            </Link>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 }

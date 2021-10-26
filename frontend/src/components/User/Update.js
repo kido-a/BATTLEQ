@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+import { Redirect, Navigate } from "react-router-dom";
 
 export default function Update() {
   const [email, setEmail] = useState("");
@@ -19,6 +19,7 @@ export default function Update() {
     emailAuth: "N",
   };
 
+  const email_id = localStorage.getItem("email");
   const headers = {
     accessToken: `${localStorage.getItem("accessToken")}`,
     "Access-Control-Allow-Origin": "*",
@@ -28,6 +29,7 @@ export default function Update() {
     (async () => {
       await axios
         .get(`/member/detail/kakao@kakao.com`, {
+          // .get(`http://3.37.99.78:8080/member/detail/${email_id}`, {
           headers,
         })
 
@@ -64,6 +66,7 @@ export default function Update() {
 
   if (update) {
     return <Redirect to={"/"} />;
+    // return <Navigate to={"/"} />;
   }
 
   return (

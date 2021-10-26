@@ -1,59 +1,44 @@
-import React, { Component, useEffect, useState, useContext } from "react";
+import { Helmet } from "react-helmet";
+import { Box, Container, Grid } from "@material-ui/core";
+
+import ProfileAvatar from "./ProfileAvatar";
+import ProfileDetails from "./ProfileDetails";
+import MainLayout from "../../layout/MainLayout";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import "../../styles/Profile.css";
-import { UserStateContext } from "../../Context/Context";
+import { useEffect, useState } from "react";
 
-export default function Profile(props) {
-  const { profile__img } = useContext(UserStateContext);
+const email = localStorage.getItem("email");
+const headers = {
+  accessToken: `${localStorage.getItem("accessToken")}`,
+  "Access-Control-Allow-Origin": "*",
+};
 
-  const deleteRow = async (e) => {
-    axios
-      .delete(`http://localhost:8080/member/kakao@kakao.com`)
-      .then((res) => {
-        localStorage.clear();
-        console.log("회원 삭제");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
+const Profile = (props) => {
   return (
-    <div>
-      <div className="profile_head">
-        <div className="profile_img_div">
-          <img src="./image1.png" className="profile_img" />
-        </div>
-        <div className="profile_info">
-          <div>{profile__img}</div>
-          <h2>이메일 : {props.user.email}</h2>
-          <h2>닉네임 : {props.user.nickname}</h2>
-          <h2>이름 : {props.user.userName}</h2>
-        </div>
-      </div>
-      <div className="profile_button">
-        <input
-          className="imgInput"
-          type="file"
-          accept="image/png, image/jpeg"
-          id="profileImg"
-          name="profileImg"
-        />
-        <Link to={"/Update"} className="btn btn-primary btn-block">
-          회원 변경
-        </Link>
-
-        <button
-          onClick={(e) => {
-            //   deleteRow(props.user.email, e);
-            deleteRow(e);
-          }}
-          className="btn btn-primary btn-block"
-        >
-          회원 삭제
-        </button>
-      </div>
-    </div>
+    <MainLayout>
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
+      <Box
+        sx={{
+          backgroundColor: "background.default",
+          minHeight: "100%",
+          py: 3,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Grid container spacing={3}>
+            <Grid item lg={4} md={6} xs={12}>
+              <ProfileAvatar profileInfo={props.user} />
+            </Grid>
+            <Grid item lg={8} md={6} xs={12}>
+              <ProfileDetails profileInfo={props.user} />
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+    </MainLayout>
   );
-}
+};
+
+export default Profile;

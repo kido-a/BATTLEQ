@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CircularProgress } from "@material-ui/core";
 import Questions from "./Questions";
 import "../../styles/Quiz.css";
+import MainLayout from "../../layout/MainLayout";
 const Quiz = (props) => {
   const [options, setOptions] = useState("");
   const [currQues, setCurrQues] = useState(0);
@@ -24,35 +25,37 @@ const Quiz = (props) => {
   };
 
   return (
-    <div className="quiz">
-      <span className="subtitle"> Welcome, {props.name} </span>
+    <MainLayout>
+      <div className="quiz">
+        <span className="subtitle"> Welcome, {props.name} </span>
 
-      {props.questions ? (
-        <>
-          <div className="quizInfo">
-            <span> {props.questions[currQues].category}</span>
-            <span> Score: {props.score}</span>
-          </div>
+        {props.questions ? (
+          <>
+            <div className="quizInfo">
+              <span> {props.questions[currQues].category}</span>
+              <span> Score: {props.score}</span>
+            </div>
 
-          <Questions
-            currQues={currQues}
-            setCurrQues={setCurrQues}
-            questions={props.questions}
-            options={options}
-            correct={props.questions[currQues]?.correct_answer} // 질문의 정담
-            score={props.score} // 정답 점수
-            setScore={props.setScore} // 점수 설정
+            <Questions
+              currQues={currQues}
+              setCurrQues={setCurrQues}
+              questions={props.questions}
+              options={options}
+              correct={props.questions[currQues]?.correct_answer} // 질문의 정담
+              score={props.score} // 정답 점수
+              setScore={props.setScore} // 점수 설정
+            />
+          </>
+        ) : (
+          <CircularProgress
+            style={{ margin: 100 }}
+            color="inherit"
+            size={150}
+            thickness={1}
           />
-        </>
-      ) : (
-        <CircularProgress
-          style={{ margin: 100 }}
-          color="inherit"
-          size={150}
-          thickness={1}
-        />
-      )}
-    </div>
+        )}
+      </div>
+    </MainLayout>
   );
 };
 
