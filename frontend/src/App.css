@@ -6,7 +6,7 @@
   box-sizing: border-box;
   scrollbar-width: thin;
 }
-
+/* 
 *::-webkit-scrollbar {
   width: 8px;
   background-color: grey;
@@ -22,4 +22,4 @@ a {
   border: 8px solid #39445a93;
   margin: 5px;
   padding: 5px;
-}
+} */
