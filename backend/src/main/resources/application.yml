@@ -2,6 +2,7 @@ spring:
   config:
     activate:
       on-profile: local
+    import: classpath:application-aws.yml
   h2:
     console:
       enabled: true
@@ -26,6 +27,7 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
+
 ---
 spring:
   config:

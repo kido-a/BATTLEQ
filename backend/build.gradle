@@ -73,7 +73,15 @@ dependencies {
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
+    /**
+     * s3 설정
+     */
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
 
+    /**
+     * Validation
+     */
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 }
 
 test {

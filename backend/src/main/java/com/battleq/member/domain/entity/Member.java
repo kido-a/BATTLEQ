@@ -51,7 +51,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column
     private Authority authority;
-
+    @Column
+    private String profileKey;
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Quiz> quiz;
@@ -66,6 +67,14 @@ public class Member {
         this.modDate = LocalDateTime.now();
         this.nickname = dto.getNickname();
         this.userInfo = dto.getUserInfo();
+    }
+
+    public void updateProfileImage(String profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public void updateProfileKey(String fileName) {
+        this.profileKey = fileName;
     }
 
     public GrantedAuthority getConvertAuthority() {
