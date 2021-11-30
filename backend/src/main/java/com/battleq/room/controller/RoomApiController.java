@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class RoomApiController {
 
     private final RoomService roomService;
-    private final RoomMapper mapper = Mappers.getMapper(RoomMapper.class);
+    //private final RoomMapper mapper = Mappers.getMapper(RoomMapper.class);
 
     @GetMapping("api/v1/room/{pin}")
     public RoomResponse findOneRoomV1(@PathVariable("pin") int pin) throws Exception {

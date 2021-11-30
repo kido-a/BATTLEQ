@@ -12,11 +12,6 @@ import java.nio.charset.Charset;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*");
-    }
 
     @Bean
     public CharacterEncodingFilter characterEncodingFilter() {

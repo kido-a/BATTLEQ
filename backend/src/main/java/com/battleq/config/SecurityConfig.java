@@ -12,6 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -28,9 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (isLocalMode()) {
             setLocalMode(http);
-        } else {
-            setProdMode(http);
         }
+        setCommonConfig(http);
     }
     private boolean isLocalMode() {
         String profile = env.getActiveProfiles().length > 0 ? env.getActiveProfiles()[0] : "";
@@ -39,45 +43,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setLocalMode(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .httpBasic().disable();
-
-        http
                 .headers()
                 .frameOptions()
                 .sameOrigin();
 
         http
                 .authorizeRequests()
-                .antMatchers("/h2-console/*").anonymous()
-                .antMatchers("/member/login").anonymous()
-                .antMatchers("/member/regist").anonymous()
-                .antMatchers("/member/validate/**").anonymous()
-                .antMatchers("/member/detail/*").hasAnyRole("STUDENT","TEACHER","ADMIN")
-                .antMatchers("/v2/api-docs").anonymous()
-                .antMatchers("/swagger-resources/**").anonymous()
-                .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/swagger/**").anonymous()
-                .antMatchers("/swagger-ui/**").anonymous()
-                .antMatchers("/api/**").anonymous()
-
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().disable()
-                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/h2-console/*").anonymous();
     }
 
-    private void setProdMode(HttpSecurity http) throws Exception {
+    private void setCommonConfig(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .httpBasic().disable();
 
         http
                 .authorizeRequests()
                 .antMatchers("/member/login").anonymous()
-                .antMatchers("/member/regist").anonymous()
+                .antMatchers("/member").permitAll()
                 .antMatchers("/member/validate/**").anonymous()
                 .antMatchers("/member/detail/*").hasAnyRole("STUDENT","TEACHER","ADMIN")
+                .antMatchers("/member/profile").hasAnyRole("STUDENT","TEACHER","ADMIN")
                 .antMatchers("/v2/api-docs").anonymous()
                 .antMatchers("/swagger-resources/**").anonymous()
                 .antMatchers("/webjars/**").anonymous()
@@ -89,7 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -98,5 +85,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("accessToken","Cache-Control","Content-Type"));
+        corsConfiguration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        return source;
+
     }
 }
