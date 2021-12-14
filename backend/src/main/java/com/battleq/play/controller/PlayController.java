@@ -18,10 +18,10 @@ public class PlayController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/play/test/{pin}")
+    /*@MessageMapping("/play/test/{pin}")
     public void test(@DestinationVariable("pin") int pin, @Payload PlayMessageDto message, SimpMessageHeaderAccessor headerAccessor){
         playService.test(pin,message,headerAccessor);
-    }
+    }*/
 
     /**
      * 호스트 입장
