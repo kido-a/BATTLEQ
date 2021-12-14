@@ -73,6 +73,10 @@ dependencies {
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
+    /**
+     * WebSocket 설정
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 }
 
