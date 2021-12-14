@@ -1,23 +1,19 @@
 import { Helmet } from "react-helmet";
 import { Box, Container, Grid } from "@material-ui/core";
-
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileDetails from "./ProfileDetails";
+import UserProfile from "./UserProfile";
 import MainLayout from "../../layout/MainLayout";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
+import { UserStateContext } from "../../context/Context";
 
-const email = localStorage.getItem("email");
-const headers = {
-  accessToken: `${localStorage.getItem("accessToken")}`,
-  "Access-Control-Allow-Origin": "*",
-};
-
-const Profile = (props) => {
+const Profile = () => {
+  const [imgPreview, setImgPreview] = useState(null);
+  const { users } = useContext(UserStateContext);
   return (
     <MainLayout>
       <Helmet>
-        <title>Profile</title>
+        <title>프로필 | Battle-Q</title>
       </Helmet>
       <Box
         sx={{
@@ -28,11 +24,17 @@ const Profile = (props) => {
       >
         <Container maxWidth="lg">
           <Grid container spacing={3}>
-            <Grid item lg={4} md={6} xs={12}>
-              <ProfileAvatar profileInfo={props.user} />
+            <Grid item lg={6} md={6} xs={12}>
+              {/*  내정보 프로필 이미지 업로드*/}
+              <ProfileAvatar users={users} imgPreview={imgPreview} />
             </Grid>
-            <Grid item lg={8} md={6} xs={12}>
-              <ProfileDetails profileInfo={props.user} />
+            {/*  내정보 프로필 기본이미지*/}
+            <Grid item lg={6} md={6} xs={12}>
+              <UserProfile users={users} setImgPreview={setImgPreview} />
+            </Grid>
+            {/*  내정보 */}
+            <Grid item lg={12} md={6} xs={12}>
+              <ProfileDetails users={users} />
             </Grid>
           </Grid>
         </Container>

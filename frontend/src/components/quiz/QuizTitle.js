@@ -1,56 +1,33 @@
-import React, { useState, useContext } from "react";
-// import "../../styles/Quiz_title.css";
+import React, { useContext } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
 import {
   TextField,
-  Avatar,
-  Checkbox,
   CssBaseline,
-  Grid,
   Typography,
-  createTheme,
-  FormControlLabel,
   Button,
   Box,
-  Select,
-  ThemeProvider,
   MenuItem,
 } from "@material-ui/core";
-import { UserStateContext } from "../../Context/Context";
-import ErrorMessage from "../../Error/ErrorMessage";
+import { UserStateContext } from "../../context/Context";
 import { useHistory } from "react-router";
 import MainLayout from "../../layout/MainLayout";
-const theme = createTheme();
 
-const Quiz_title = ({ setQuizId, setOwnerId }) => {
-  const [category, setCategory] = useState("");
-  const [name, setName] = useState("");
-  const [introduction, setIntroduction] = useState("");
-  const [error, setError] = useState(false);
+const QuizTitle = () => {
   const history = useHistory();
-  // const navigate = useNavigate();
 
-  // const { quizId, setQuizId } = useContext(UserStateContext);
+  const { quizData, handleChange, setQuizId, setOwnerId } =
+    useContext(UserStateContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!category || !introduction || !name) {
-      setError(true);
-      return;
-    } else {
-      setError(false);
-      history.push("/quiz_make");
-      // navigate("/quiz_make");
-    }
 
     const data = {
-      name: name,
-      introduction: introduction,
-      category: category,
-      ownerId: 1,
-      thumbnail:
-        "https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg",
+      name: quizData.name,
+      introduction: quizData.introduction,
+      category: quizData.category,
+      ownerId: quizData.ownerId,
+      thumbnail: quizData.thumbnail,
     };
 
     axios
@@ -58,17 +35,14 @@ const Quiz_title = ({ setQuizId, setOwnerId }) => {
       // .post("http://3.37.99.78:8080/api/v1/quiz", data)
       .then((res) => {
         console.log(res);
-        const make_quizid = res.data.id;
-        console.log("make_quizid : ", make_quizid);
-        setQuizId(make_quizid);
+
+        setQuizId(res.data.id);
         setOwnerId(data.ownerId);
-        // console.log("quizId : ", quizId);
-        // setQuizId(quizId + make_quizid);
-        // console.log("quizId : ", quizId);
       })
       .catch((err) => {
         console.log(err);
       });
+    history.push("/quizMake");
   };
 
   return (
@@ -101,8 +75,8 @@ const Quiz_title = ({ setQuizId, setOwnerId }) => {
               name="name"
               autoComplete="off"
               autoFocus
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={quizData.name}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -112,8 +86,8 @@ const Quiz_title = ({ setQuizId, setOwnerId }) => {
               label="설명"
               id="introduction"
               autoComplete="off"
-              value={introduction}
-              onChange={(e) => setIntroduction(e.target.value)}
+              value={quizData.introduction}
+              onChange={handleChange}
             />
             <TextField
               select
@@ -125,8 +99,8 @@ const Quiz_title = ({ setQuizId, setOwnerId }) => {
               label="카테고리"
               variant="outlined"
               style={{ marginBottom: 30 }}
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={quizData.category}
+              onChange={handleChange}
             >
               <MenuItem key="It" value="IT/인터넷">
                 {" "}
@@ -158,4 +132,4 @@ const Quiz_title = ({ setQuizId, setOwnerId }) => {
   );
 };
 
-export default Quiz_title;
+export default QuizTitle;

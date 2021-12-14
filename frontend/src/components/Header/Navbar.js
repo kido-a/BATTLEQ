@@ -1,15 +1,11 @@
-import { useState } from "react";
-import { Link, Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import { HomeOutlined } from "@material-ui/icons";
-import PropTypes from "prop-types";
 
 import { AppBar, Box, Hidden, IconButton, Toolbar } from "@material-ui/core";
 import InputIcon from "@material-ui/icons/Input";
 
-import Logo from "./Logo";
-
-const Navbar = ({ onMobileNavOpen, Logout, ...rest }) => {
+const NavBar = ({ onMobileNavOpen, Logout, ...rest }) => {
   return (
     <AppBar elevation={0} {...rest}>
       <Toolbar>
@@ -33,4 +29,4 @@ const Navbar = ({ onMobileNavOpen, Logout, ...rest }) => {
   );
 };
 
-export default Navbar;
+export default NavBar;

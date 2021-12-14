@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Link, Route, useRouteMatch } from "react-router-dom";
-import { NavDropdown } from "react-bootstrap";
-import { UserStateContext } from "../../Context/Context";
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { UserStateContext } from "../../context/Context";
 import { styled } from "@material-ui/styles";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import Profile from "../User/Profile";
-import Home from "../Home/Home";
+import NavBar from "./NavBar";
+import Sidebar from "./SideBar";
 import { useHistory } from "react-router";
-import { Divider } from "@material-ui/core";
-export default function Nav(props) {
+export default function Nav() {
+  const { setSuccessed, successed, users, resetUser } =
+    useContext(UserStateContext);
   const history = useHistory();
+
   const DashboardLayoutRoot = styled("div")(() => ({
-    // backgroundColor: theme.palette.background.default,
     display: "flex",
     height: "100%",
     backgroundColor: "black",
@@ -20,53 +18,28 @@ export default function Nav(props) {
     width: "100%",
   }));
 
-  const DashboardLayoutWrapper = styled("div")(({ theme }) => ({
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-    backgroundColor: "red",
-    paddingTop: 64,
-    [theme.breakpoints.up("lg")]: {
-      paddingLeft: 256,
-    },
-  }));
-
-  const DashboardLayoutContainer = styled("div")({
-    display: "flex",
-    flex: "1 1 auto",
-    overflow: "hidden",
-  });
-
-  const DashboardLayoutContent = styled("div")({
-    flex: "1 1 auto",
-    height: "100%",
-    overflow: "auto",
-    backgroundColor: "darkblue",
-  });
-
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-  console.log("isMobileNavOpen", isMobileNavOpen);
-  const { user } = useContext(UserStateContext);
   const handleLogout = () => {
     localStorage.clear();
-    props.setUsers(null);
+    resetUser();
+    setSuccessed(false);
     history.push("/");
   };
 
   let buttons;
-  if (props.user) {
+  if (successed) {
     buttons = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item"></li>
         <DashboardLayoutRoot>
-          <Navbar
+          <NavBar
             Logout={handleLogout}
             onMobileNavOpen={() => setMobileNavOpen(true)}
           />
           <Sidebar
             onMobileClose={() => setMobileNavOpen(false)}
             openMobile={isMobileNavOpen}
-            userInfo={props.user}
+            userInfo={users}
           />
         </DashboardLayoutRoot>
       </ul>

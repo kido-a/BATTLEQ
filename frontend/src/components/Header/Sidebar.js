@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import NavItem from "./NavItem";
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   Drawer,
   Hidden,
@@ -14,15 +13,10 @@ import {
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
   Users as UsersIcon,
   MessageSquare as MessageIcon,
   Edit as EditIcon,
-  Dribbble as DribbleIcon,
   Key as KeyIcon,
 } from "react-feather";
 
@@ -43,25 +37,26 @@ const items = [
     title: "사용자",
   },
   {
-    href: "/quiz_search",
+    href: "/quizSearch",
     icon: ShoppingBagIcon,
     title: "퀴즈 목록",
   },
   {
-    href: "/quiz_title",
+    href: "/quizTitle",
     icon: EditIcon,
     title: "퀴즈 생성",
   },
   {
-    href: "/quiz_join",
+    href: "/playHost",
     icon: KeyIcon,
-    title: "퀴즈 참가",
+    title: "호스트",
   },
   {
-    href: "/quiz_setting",
-    icon: DribbleIcon,
-    title: "연습게임",
+    href: "/playUser",
+    icon: KeyIcon,
+    title: "플레이어",
   },
+
   {
     href: "/guest",
     icon: MessageIcon,
@@ -74,17 +69,15 @@ const items = [
     title: "Error",
   },
 ];
-const Sidebar = (props) => {
+const SideBar = (props) => {
   const location = useLocation();
-  // console.log(onMobileClose);
-  // console.log(openMobile);
+
   useEffect(() => {
     if (props.openMobile && props.onMobileClose) {
       props.onMobileClose();
     }
   }, [location.pathname]);
 
-  const [avatar, setAvatar] = useState("");
   const content = (
     <Box
       sx={{
@@ -172,4 +165,4 @@ const Sidebar = (props) => {
   );
 };
 
-export default Sidebar;
+export default SideBar;

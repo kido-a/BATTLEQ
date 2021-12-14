@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   TextField,
@@ -10,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
-const Quiz_Filter = (props) => {
+const QuizFilter = (props) => {
   const dropdownChangeHandler = (event) => {
     props.onChangeFilter(event.target.value);
   };
@@ -46,4 +45,4 @@ const Quiz_Filter = (props) => {
   );
 };
 
-export default Quiz_Filter;
+export default QuizFilter;

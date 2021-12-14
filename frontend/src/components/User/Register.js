@@ -1,75 +1,41 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import { UserStateContext } from "../../Context/Context";
-import { Link, Navigate } from "react-router-dom";
-import { PhotoCamera } from "@material-ui/icons";
+import { UserStateContext } from "../../context/Context";
+import { Link } from "react-router-dom";
 
-import { Container } from "react-bootstrap";
 import {
   TextField,
   Avatar,
-  Checkbox,
-  CssBaseline,
   Grid,
   Typography,
-  createTheme,
-  FormControlLabel,
   Button,
   Box,
-  ThemeProvider,
 } from "@material-ui/core";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [userName, setUserName] = useState("");
   const [emailcheck, setEmailcheck] = useState("");
+  const [nicknameCheck, setnicknameCheck] = useState("");
   const [regist, setRegist] = useState(false);
   const [message, setMessage] = useState("");
-  const [httpStatusCode, setHttpStatusCode] = React.useState();
 
-  const [profile, setProfile] = useState("profile_default_character1"); // 회원가입 시 들어가는 프로필 사진.
-
-  const { profile__img, setProfile__img } = useContext(UserStateContext); // Profile.js에서도 값을 보내기 위한 useContext setProfile__img(profile)
-  const theme = createTheme();
-  // const save_img = "./" + profile + ".png";
-  // setProfile(save_img);
-
-  // const save_img = "./" + profile_img + ".png";
-  // setProfile__img(save_img);
-
-  console.log("profile__img : ", profile__img);
-  console.log("profile : ", profile);
+  const { users, handleChange, resetUser } = useContext(UserStateContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("profile", profile);
-    formData.append("email", email);
-    formData.append("nickname", nickname);
-    formData.append("authority", "ROLE_ADMIN");
-    formData.append("userInfo", "테스트 유저입니다.");
-
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
 
     const data = {
-      email: email,
-      pwd: pwd,
-      nickname: nickname,
-      userName: userName,
-      authority: "ROLE_ADMIN",
-      userInfo: "테스트 유저입니다.",
+      email: users.email,
+      pwd: users.pwd,
+      nickname: users.nickname,
+      userName: users.userName,
+      authority: users.authority,
+      userInfo: users.userInfo,
     };
 
     axios
-      .post("http://localhost:8080/member/regist", data)
-      // .post("http://3.37.99.78:8080/member/regist", formData, config)
+      .post("http://localhost:8080/member", data)
+      // .post("http://3.37.99.78:8080/member", data)
       .then((res) => {
         console.log(res);
         setRegist(true);
@@ -78,13 +44,41 @@ export default function Register() {
         setMessage("이메일을 확인해주세요");
         console.log(err);
       });
+    resetUser();
   };
 
-  const handleFileChange = (e) => {
-    console.log("picture : ", e.target.files[0]);
-    const file = e.target.files[0];
-    setProfile(file); // 회원가입 시 들어갈 프로필 사진
-    setProfile__img(file); //useContext 변수 Profile과 update에서 사용하기 위함.
+  const OverlapNickname = (e) => {
+    const overNickName = users.nickname;
+    e.preventDefault();
+    axios
+      // .get(`http://3.37.99.78:8080/member/validate/email/${overemail}`)
+      .get(`http://localhost:8080/member/validate/nickname/${overNickName}`)
+      .then((res) => {
+        console.log(res.status);
+        setnicknameCheck("사용 가능한 닉네임 입니다.");
+      })
+      .catch((err) => {
+        if (users.nickname === "") {
+          setnicknameCheck("닉네임을 입력하세요");
+        } else setnicknameCheck("이미 사용중인 닉네임 입니다.");
+      });
+  };
+
+  const OverlapEmail = (e) => {
+    const overemail = users.email;
+    e.preventDefault();
+    axios
+      // .get(`http://3.37.99.78:8080/member/validate/email/${overemail}`)
+      .get(`http://localhost:8080/member/validate/email/${overemail}`)
+      .then((res) => {
+        console.log(res.status);
+        setEmailcheck("사용 가능한 이메일 입니다.");
+      })
+      .catch((err) => {
+        if (users.email === "") {
+          setEmailcheck("이메일을 입력하세요");
+        } else setEmailcheck("이미 사용중인 이메일 입니다.");
+      });
   };
 
   if (regist) {
@@ -105,6 +99,15 @@ export default function Register() {
     check = (
       <div className="alert alert-danger" role="alert">
         {emailcheck}
+      </div>
+    );
+  }
+  let nickCheck = "";
+
+  if (nicknameCheck) {
+    nickCheck = (
+      <div className="alert alert-danger" role="alert">
+        {nicknameCheck}
       </div>
     );
   }
@@ -130,41 +133,38 @@ export default function Register() {
             <TextField
               required
               fullWidth
-              id="username"
+              id="userName"
               label="사용자 이름"
-              name="username"
-              autoComplete="uname"
-              autoFocus
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              name="userName"
+              autoComplete="off"
+              value={users.userName}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              autoComplete="nname"
-              name="nickName"
+              autoComplete="off"
+              name="nickname"
               required
               fullWidth
-              id="nickName"
+              id="nickname"
               label="닉네임"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              value={users.nickname}
             />
+            <Button onClick={OverlapNickname}>중복확인</Button>
           </Grid>
           <Grid item xs={12}>
             <TextField
-              // inputProps={{
-              //   autoComplete: "off",
-              // }}
-              required
+              d
               fullWidth
               id="email"
               label="이메일"
               name="email"
               autoComplete="off"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={users.email}
+              onChange={handleChange}
             />
+            <Button onClick={OverlapEmail}>중복확인</Button>
           </Grid>
           <Grid item xs={12} marginBottom={2}>
             <TextField
@@ -175,32 +175,16 @@ export default function Register() {
               type="password"
               id="pwd"
               autoComplete="new-password"
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
+              value={users.pwd}
+              onChange={handleChange}
             />
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <input
-            accept="image/*"
-            style={{ display: "none" }}
-            id="raised-button-file"
-            multiple
-            type="file"
-            name="profile"
-            onChange={handleFileChange}
-          />
-          {/* { input과 결합. (input의 id값과 label의 id값을 같게)} */}
-          <label htmlFor="raised-button-file">
-            <Button variant="contained" color="success" component="span">
-              <PhotoCamera /> 프로필 추가
-            </Button>
-          </label>
         </Grid>
 
         <Grid item xs={12}>
           {error}
           {check}
+          {nickCheck}
         </Grid>
 
         <Button

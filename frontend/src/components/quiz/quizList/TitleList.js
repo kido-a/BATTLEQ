@@ -1,22 +1,18 @@
 import React from "react";
-import Room_list from "./Room_list";
+import RoomList from "./RoomList";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  Typography,
 } from "@material-ui/core";
-const Title_list = (props) => {
-  if (props.quizs_rooms.length === 0) {
+const TitleList = (props) => {
+  if (props.quizRoomData.length === 0) {
     return <h2 className="expenses-list__fallback"> Found no expenses.</h2>;
   }
 
@@ -35,31 +31,15 @@ const Title_list = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.quizs_rooms.map((quiz_list, index) => (
-                <Room_list
-                  key={index}
-                  name={quiz_list.name}
-                  introduction={quiz_list.introduction}
-                  category={quiz_list.category}
-                  thumbnail={quiz_list.thumbnail}
-                  quizItems={quiz_list.quizItems}
-                />
+              {props.quizRoomData.map((quizData, index) => (
+                <RoomList key={index} quizData={quizData} />
               ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
-      {/* <TablePagination
-        component="div"
-        count={props.quizs_rooms.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      /> */}
     </Card>
   );
 };
 
-export default Title_list;
+export default TitleList;

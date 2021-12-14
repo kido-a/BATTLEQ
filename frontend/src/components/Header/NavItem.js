@@ -1,14 +1,7 @@
-import {
-  NavLink as RouterLink,
-  matchPath,
-  useLocation,
-} from "react-router-dom";
-import PropTypes from "prop-types";
+import { NavLink as RouterLink } from "react-router-dom";
 import { Button, ListItem } from "@material-ui/core";
 
 const NavItem = ({ href, icon: Icon, title, ...rest }) => {
-  const location = useLocation();
-
   return (
     <ListItem
       disableGutters
