@@ -82,6 +82,12 @@ dependencies {
      * Validation
      */
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
+    /**
+     * WebSocket 설정
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 test {
