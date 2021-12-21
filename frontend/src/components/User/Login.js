@@ -1,37 +1,30 @@
-// import { ThemeProvider } from "@emotion/react";
 import axios from "axios";
-import React, { useState, useEffect, useContext } from "react";
-import { Redirect, Link, Navigate } from "react-router-dom";
-import { UserStateContext } from "../../Context/Context";
+import React, { useState, useContext } from "react";
+import { Redirect, Link } from "react-router-dom";
+import { UserStateContext } from "../../context/Context";
 
-import { Container } from "react-bootstrap";
 import {
   TextField,
   Avatar,
-  Checkbox,
-  CssBaseline,
   Grid,
   Typography,
-  createTheme,
-  FormControlLabel,
   Button,
   Box,
-  ThemeProvider,
 } from "@material-ui/core";
 import swal from "sweetalert";
 
-export default function Login({ setUsers, setLoggedIn }) {
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [successCheck, setSuccessCheck] = useState(false);
+export default function Login() {
   const [message, setMessage] = useState("");
+
+  const { users, handleChange, setSuccessed, successed } =
+    useContext(UserStateContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = {
-      email: email,
-      pwd: pwd,
+      email: users.email,
+      pwd: users.pwd,
     };
 
     axios
@@ -40,22 +33,16 @@ export default function Login({ setUsers, setLoggedIn }) {
       .then((res) => {
         localStorage.setItem("accessToken", res.data.data);
         localStorage.setItem("email", data.email);
-        setSuccessCheck(true);
-
-        // data는 이메일과 패스워드 App.js의 setUsers로 이메일과 패스워드 값을 넘기는 부분.
-        // 그래서 로그인 직후 이메일은 바로 갱신이 되지만 다른 정보는 새로고침 해야 뜸.
-        // 데이터 보내는 것 수정해야함 (상태관리를 어떻게 해야하는지 추후 수정 (usecontext, redux, mobx 등))
-
-        setUsers(data);
+        localStorage.setItem("pwd", data.pwd);
+        setSuccessed(true);
       })
 
       .catch((err) => {
         setMessage(err.response.data.message);
       });
   };
-
-  if (successCheck) {
-    swal("Success", {
+  if (successed) {
+    swal("로그인 성공", {
       timer: 5000,
     });
     return <Redirect to={"/"} />;
@@ -95,10 +82,10 @@ export default function Login({ setUsers, setLoggedIn }) {
           id="email"
           label="이메일"
           name="email"
-          value={email}
+          value={users.email}
           autoComplete="off"
           autoFocus
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleChange}
         />
         <TextField
           margin="normal"
@@ -108,9 +95,9 @@ export default function Login({ setUsers, setLoggedIn }) {
           label="비밀번호"
           type="password"
           id="pwd"
-          value={pwd}
+          value={users.pwd}
           autoComplete="current-password"
-          onChange={(e) => setPwd(e.target.value)}
+          onChange={handleChange}
         />
 
         <Button

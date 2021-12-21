@@ -2,7 +2,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function (app) {
   app.use(
-    "/membet/regist",
+    "/member",
     createProxyMiddleware({
       target: "http://localhost:8080",
       changeOrigin: true,
@@ -43,6 +43,14 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+
+  app.use(
+    "/member/detail/test7@naver.com",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
   app.use(
     "/member/detail/test3@naver.com",
     createProxyMiddleware({
@@ -52,6 +60,20 @@ module.exports = function (app) {
   );
   app.use(
     "/member/validate/email/kakao@kakao.com",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
+  app.use(
+    "/member/validate/email/test1@naver.com",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
+  app.use(
+    "/member/validate/nickname/test_nickName0",
     createProxyMiddleware({
       target: "http://localhost:8080",
       changeOrigin: true,
@@ -76,6 +98,28 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: "http://localhost:8080",
       changeOrigin: true,
+    })
+  );
+
+  app.use(
+    "/member/profile",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
+  app.use(
+    "/member/profile?email=test7@naver.com",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
+
+  app.use(
+    createProxyMiddleware("/connect", {
+      target: "http://localhost:8080",
+      ws: true,
     })
   );
 };

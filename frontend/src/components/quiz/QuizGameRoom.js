@@ -2,10 +2,8 @@ import React from "react";
 import MainLayout from "../../layout/MainLayout";
 import { Box, Container, Grid } from "@material-ui/core";
 
-const Quiz_game_room = (props) => {
+const QuizGameRoom = (props) => {
   const { location } = props;
-  console.log("location : ", location);
-  console.log("props : ", props);
   if (location) {
     return (
       <MainLayout>
@@ -55,4 +53,4 @@ const Quiz_game_room = (props) => {
   }
 };
 
-export default Quiz_game_room;
+export default QuizGameRoom;

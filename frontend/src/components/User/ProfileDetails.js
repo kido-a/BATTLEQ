@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext } from "react";
+import { UserStateContext } from "../../context/Context";
 import {
   Box,
   Button,
@@ -9,23 +10,38 @@ import {
   Grid,
   TextField,
 } from "@material-ui/core";
+import axios from "axios";
 
-const ProfileDetails = (props) => {
-  const [values, setValues] = useState({
-    userName: props.profileInfo.userName,
-    nickName: props.profileInfo.nickname,
-    email: props.profileInfo.email,
-  });
+const ProfileDetails = () => {
+  const { users, handleChange } = useContext(UserStateContext);
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  const pwd = localStorage.getItem("pwd");
+
+  const data = {
+    authority: users.authority,
+    email: users.email,
+    emailAuth: "Y",
+    nickname: users.nickname,
+    profileImg: "string",
+    pwd: pwd,
+    userInfo: users.userInfo,
+    userName: users.userName,
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .put("http://localhost:8080/member", data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
-    <form autoComplete="off" noValidate {...props}>
+    <form autoComplete="off" noValidate>
       <Card>
         <CardHeader subheader="The information can be edited" title="Profile" />
         <Divider />
@@ -35,44 +51,35 @@ const ProfileDetails = (props) => {
               <TextField
                 fullWidth
                 helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
+                label="사용자"
+                name="userName"
                 onChange={handleChange}
                 required
-                value={values.userName}
+                value={users.userName}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                label="Last name"
-                name="lastName"
+                label="닉네임"
+                name="nickname"
                 onChange={handleChange}
                 required
-                value={values.nickName}
+                value={users.nickname}
                 variant="outlined"
               />
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                label="Email Address"
+                label="이메일"
                 name="email"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={users.email}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              공란
-            </Grid>
-            <Grid item md={6} xs={12}>
-              공란
-            </Grid>
-            <Grid item md={6} xs={12}>
-              공란
             </Grid>
           </Grid>
         </CardContent>
@@ -84,7 +91,7 @@ const ProfileDetails = (props) => {
             p: 2,
           }}
         >
-          <Button color="primary" variant="contained">
+          <Button color="primary" variant="contained" onClick={handleSubmit}>
             Save details
           </Button>
         </Box>
