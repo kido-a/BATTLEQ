@@ -14,4 +14,5 @@ public enum MessageType {
     HOST,
     GENERATE,
     BAN,
+    JOINFAILED
 }
