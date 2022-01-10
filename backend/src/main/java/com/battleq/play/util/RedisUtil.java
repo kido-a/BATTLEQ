@@ -1,6 +1,7 @@
 package com.battleq.play.util;
 
 import com.battleq.play.domain.dto.GradingMessage;
+import com.battleq.play.domain.dto.QuizResultMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class RedisUtil {
     private final RedisTemplate<String, String> userListRedisTemplate;
 
     @Autowired
-    private final RedisTemplate<String, String> valueRedisTemplate;
+    private final RedisTemplate<String, QuizResultMessage> resultRedisTemplate;
+
 
     public boolean hasKey(String key){
         return stringRedisTemplate.hasKey(key);
@@ -49,37 +51,54 @@ public class RedisUtil {
         ListOperations<String, String> userListOperations = userListRedisTemplate.opsForList();
         userListOperations.rightPush(key, value);
         long size = userListOperations.size(key) == null ? 0 : userListOperations.size(key); // NPE 체크해야함.
-        log.info(String.valueOf(size));
-        log.info("userList = " + userListOperations.range(key, 0, size));
         return userListOperations.range(key,0,size);
     }
     public List<String> deleteUser(String key, String value){
         ListOperations<String, String> userListOperations = userListRedisTemplate.opsForList();
         userListOperations.remove(key,1,value);
         long size = userListOperations.size(key) == null ? 0 : userListOperations.size(key); // NPE 체크해야함.
-        log.info(String.valueOf(size));
-        log.info("userList = " + userListOperations.range(key, 0, size));
         return userListOperations.range(key,0,size);
     }
-    public String getData(String key) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        return valueOperations.get(key);
-    }
-
-    public void setData(String key, String value) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key, value);
-    }
-
     public void setAnswerData(String key, GradingMessage message) {
         ListOperations<String, GradingMessage> listOperations = listRedisTemplate.opsForList();
         listOperations.rightPush(key, message);
 
-        long size = listOperations.size(key) == null ? 0 : listOperations.size(key); // NPE 체크해야함.
+        /*long size = listOperations.size(key) == null ? 0 : listOperations.size(key); // NPE 체크해야함.
         log.info(String.valueOf(size));
-        log.info("operations.opsForList().range() = " + listOperations.range(key, 0, size));
+        log.info("operations.opsForList().range() = " + listOperations.range(key, 0, size));*/
+    }
+    public boolean findSessionIdWithAnswer(String key, String sessionId){
+        ListOperations<String, GradingMessage> listOperations = listRedisTemplate.opsForList();
+        long size = listOperations.size(key) == null ? 0 : listOperations.size(key);
+        List<GradingMessage> list = listOperations.range(key,0,size);
+        for(GradingMessage g : list){
+            if(g.getSessionId().equals(sessionId)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public ListOperations<String, GradingMessage> getAnswerData(String key) {
+        ListOperations<String, GradingMessage> listOperations = listRedisTemplate.opsForList();
+        return listOperations;
+    }
+    public ListOperations<String, GradingMessage> deleteAnswerData(String key) {
+        ListOperations<String, GradingMessage> listOperations = listRedisTemplate.opsForList();
+        long size = listOperations.size(key) == null ? 0 : listOperations.size(key);
+        for(int i=0;i<size;i++){
+            listOperations.leftPop(key);
+        }
+        return listOperations;
     }
 
+    public void setResultData(String key, QuizResultMessage message) {
+        ListOperations<String, QuizResultMessage> listOperations = resultRedisTemplate.opsForList();
+        listOperations.rightPush(key, message);
+    }
+    public ListOperations<String, QuizResultMessage> getResultData(String key) {
+        ListOperations<String, QuizResultMessage> listOperations = resultRedisTemplate.opsForList();
+        return listOperations;
+    }
     public void setDataExpire(String key, String value, long duration) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
         Duration expireDuration = Duration.ofSeconds(duration);
