@@ -8,11 +8,11 @@ public enum MessageType {
     FINISH,
     NEXT,
     END,
-    CATEGORY,
     SUBMIT,
     USERLIST,
     HOST,
     GENERATE,
     BAN,
-    JOINFAILED
+    JOINFAILED,
+    GRADE
 }

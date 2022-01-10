@@ -1,5 +1,6 @@
-package com.battleq.play.domain;
+package com.battleq.play.domain.dto;
 
+import com.battleq.play.domain.MessageType;
 import lombok.*;
 
 @Getter
@@ -7,9 +8,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayMessageDto {
+public class QuizMessage {
     private MessageType messageType;
-    private String content;
     private String sender;
-    private String quizNum;
+    private String quizItemId;
 }

@@ -1,22 +1,20 @@
-package com.battleq.quizItem.domain.dto.request;
+package com.battleq.quizItem.domain.dto;
 
 import com.battleq.quizItem.domain.QuizPointType;
 import com.battleq.quizItem.domain.QuizType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import javax.validation.constraints.NotEmpty;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
-public class UpdateQuizItemRequest{
-    @NotEmpty
+@NoArgsConstructor
+@AllArgsConstructor
+public class QuizItemPlayDto<T> {
     private String title;
-    private List<String> content;
-    private String answer;
+    private Object content;
     private String image;
     private QuizType type;
     private int limitTime;
     private QuizPointType pointType;
-    private Long ownerId;
 
 }

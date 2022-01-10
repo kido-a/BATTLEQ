@@ -1,6 +1,9 @@
 package com.battleq.play.controller;
 
-import com.battleq.play.domain.PlayMessageDto;
+import com.battleq.play.domain.dto.BasicMessage;
+import com.battleq.play.domain.dto.GradingMessage;
+import com.battleq.play.domain.dto.PlayMessageDto;
+import com.battleq.play.domain.dto.QuizMessage;
 import com.battleq.play.service.PlayService;
 import com.battleq.quiz.domain.dto.response.ExceptionResponse;
 import com.battleq.quiz.domain.exception.NotFoundQuizException;
@@ -24,11 +27,6 @@ public class PlayController {
     private final PlayService playService;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
-
-    /*@MessageMapping("/play/test/{pin}")
-    public void test(@DestinationVariable("pin") int pin, @Payload PlayMessageDto message, SimpMessageHeaderAccessor headerAccessor){
-        playService.test(pin,message,headerAccessor);
-    }*/
 
     /**
      * 호스트 입장
@@ -83,8 +81,8 @@ public class PlayController {
      * 퀴즈 시작
      */
     @MessageMapping("/play/startQuiz/{pin}")
-    public void startQuiz(@DestinationVariable("pin") int pin, SimpMessageHeaderAccessor headerAccessor){
-        playService.startQuiz(pin,headerAccessor);
+    public void startQuiz(@DestinationVariable("pin") int pin, @Payload PlayMessageDto message, SimpMessageHeaderAccessor headerAccessor) throws NotFoundQuizException {
+        playService.startQuiz(pin,message,headerAccessor);
     }
 
     /**
@@ -99,8 +97,8 @@ public class PlayController {
      * 퀴즈 단계 진행
      */
     @MessageMapping("/play/nextQuiz/{pin}")
-    public void nextQuiz(@DestinationVariable("pin") int pin, SimpMessageHeaderAccessor headerAccessor){
-        playService.nextQuiz(pin,headerAccessor);
+    public void nextQuiz(@DestinationVariable("pin") int pin, @Payload QuizMessage message, SimpMessageHeaderAccessor headerAccessor){
+        playService.nextQuiz(pin,message,headerAccessor);
     }
 
     /**
@@ -112,24 +110,23 @@ public class PlayController {
     }
 
     /**
-     * 퀴즈 문항
+     * 퀴즈 정답 제출
      */
-    @MessageMapping("/play/sendQuizItem/{pin}")
-    public void sendQuizItem(@DestinationVariable("pin") int pin, @Payload PlayMessageDto message, SimpMessageHeaderAccessor headerAccessor){
-        playService.exitHost(pin,message,headerAccessor);
+    @MessageMapping("/play/sendAnswer/{pin}")
+    public void sendAnswer(@DestinationVariable("pin") int pin, @Payload GradingMessage message, SimpMessageHeaderAccessor headerAccessor){
+        playService.sendAnswer(pin,message,headerAccessor);
     }
 
     /**
-     * 퀴즈 정답
+     * 퀴즈 채점 (HOST)
      */
-    @MessageMapping("play/sendAnswer/{pin}")
-    public void sendAnswer(@DestinationVariable("pin") int pin, @Payload PlayMessageDto message, SimpMessageHeaderAccessor headerAccessor){
-        playService.exitHost(pin,message,headerAccessor);
+    @MessageMapping("/play/gradingAnswer/{pin}")
+    public void gradingAnswer(@DestinationVariable("pin") int pin, SimpMessageHeaderAccessor headerAccessor){
+        playService.gradingAnswer(pin,headerAccessor);
     }
 
     @ExceptionHandler({NotFoundQuizException.class})
     public ExceptionResponse NotFoundQuiz(final Exception ex) {
         return new ExceptionResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND, "NOT_FOUND", "퀴즈를 찾을 수 없습니다.", "/api/v1/quiz");
     }
-
 }
