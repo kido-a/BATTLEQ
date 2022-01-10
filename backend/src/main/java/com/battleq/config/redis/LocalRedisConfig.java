@@ -1,6 +1,7 @@
 package com.battleq.config.redis;
 
 import com.battleq.play.domain.dto.GradingMessage;
+import com.battleq.play.domain.dto.QuizResultMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -14,8 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 import redis.embedded.RedisServer;
 
 import javax.annotation.PostConstruct;
@@ -69,12 +69,33 @@ public class LocalRedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, GradingMessage> redisTemplate() {
+    public RedisTemplate<String, GradingMessage> gradingRedisTemplate() {
+        var serializer = new Jackson2JsonRedisSerializer<>(GradingMessage.class);
+        serializer.setObjectMapper(objectMapper());
+
         RedisTemplate<String, GradingMessage> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
+        // value serializer
         redisTemplate.setKeySerializer(new StringRedisSerializer());   // Key: String
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));  // Value: 직렬화에 사용할 Object 사용하기
+        redisTemplate.setValueSerializer(serializer);  // Value: 직렬화에 사용할 Object 사용하기
+        // hash value serializer
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
         return redisTemplate;
     }
+    @Bean
+    public RedisTemplate<String, QuizResultMessage> resultRedisTemplate() {
+        var serializer = new Jackson2JsonRedisSerializer<>(QuizResultMessage.class);
+        serializer.setObjectMapper(objectMapper());
 
+        RedisTemplate<String, QuizResultMessage> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        // value serializer
+        redisTemplate.setKeySerializer(new StringRedisSerializer());   // Key: String
+        redisTemplate.setValueSerializer(serializer);  // Value: 직렬화에 사용할 Object 사용하기
+        // hash value serializer
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+        return redisTemplate;
+    }
 }

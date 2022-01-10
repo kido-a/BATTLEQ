@@ -1,17 +1,21 @@
 package com.battleq.play.domain.dto;
 
+import com.battleq.play.domain.MessageType;
 import lombok.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class GradingMessage {
+    private MessageType messageType;
     private String sessionId;
-    private String submissionTime;
+    private LocalDateTime submissionTime;
+    private String sender;
     private String answer;
+    private double score;
 }
