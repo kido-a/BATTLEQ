@@ -37,7 +37,11 @@ public class LocalRedisConfig {
         if (isArmMac()) {
             redisServer = new RedisServer(getRedisFileForArmMac(),redisPort);
         } else {
-            redisServer = new RedisServer(redisPort);
+            redisServer = RedisServer.builder()
+                    .port(redisPort)
+                    //.redisExecProvider(customRedisExec)
+                    .setting("maxmemory 128M") //maxheap 128M
+                    .build();
         }
         redisServer.start();
     }
@@ -83,6 +87,7 @@ public class LocalRedisConfig {
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
         return redisTemplate;
     }
+
     @Bean
     public RedisTemplate<String, QuizResultMessage> resultRedisTemplate() {
         var serializer = new Jackson2JsonRedisSerializer<>(QuizResultMessage.class);

@@ -1,4 +1,4 @@
-package com.battleq.room.controller;
+package com.battleq.room.domain.controller;
 
 
 import com.battleq.quiz.domain.dto.response.ExceptionResponse;
