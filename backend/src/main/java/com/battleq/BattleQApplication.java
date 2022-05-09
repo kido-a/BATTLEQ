@@ -9,9 +9,6 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ASSIGNABLE_TYPE,
-        classes = ElasticSearchRepository.class))
 public class BattleQApplication {
 
     public static void main(String[] args) {
