@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final Environment env;
@@ -75,10 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sub/**").anonymous()
                 .antMatchers("/pub/**").anonymous()
                 .antMatchers("/connect/**").anonymous()
+                .antMatchers("/crossword/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().disable()
-                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .formLogin().disable();
+//                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

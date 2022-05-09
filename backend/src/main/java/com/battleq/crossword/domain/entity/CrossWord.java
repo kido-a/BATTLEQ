@@ -1,23 +1,34 @@
-package com.battleq.crossword.domain.emtity;
+package com.battleq.crossword.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
-import javax.persistence.*;
 
 @Document(indexName = "crossword")
-@Getter
+@Setting(settingPath = "/elastic/setting.json")
 public class CrossWord {
 
+    @Id
+    private String id;
+    @Field(type = FieldType.Text, analyzer = "word_analyzer")
     private String question;
+    @Field(type = FieldType.Text, analyzer = "word_analyzer")
     private String answer;
 
     public CrossWord(String question,String answer) {
        this.question = question;
        this.answer = answer;
+    }
+
+    @Override
+    public String toString() {
+        return "CrossWord{" +
+                "id='" + id + '\'' +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                '}';
     }
 }

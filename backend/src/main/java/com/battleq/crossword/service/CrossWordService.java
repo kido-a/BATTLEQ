@@ -1,2 +1,8 @@
-package com.battleq.crossword.service;public class CrossWordService {
+package com.battleq.crossword.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CrossWordService {
+
 }

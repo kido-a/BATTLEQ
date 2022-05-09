@@ -5,6 +5,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ElasticSearchRepository extends ElasticsearchRepository<Quiz,Long> {
+public interface ESRepository extends ElasticsearchRepository<Quiz,Long> {
     Quiz findByQuestion(String question);
 }
